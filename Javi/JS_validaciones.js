@@ -1,6 +1,5 @@
 // Creamos la funcion
 function validacion() {
-
     pregunta = document.getElementById('texto1')
     // Le damos a preguna la referencia del elemento que tiene por id 'texto1'
     if(pregunta.value == '') {
@@ -48,7 +47,7 @@ function validacion() {
             return false
         }
 
-    pregunta6 = document.getElementsByName('Ingredientes')
+    pregunta6 = document.getElementsByName('ingredientes')
     var seleccionado1 = false
     for(var i=0; i<pregunta6.length; i++) {
         if(pregunta6[i].checked) {
@@ -121,4 +120,5 @@ function validacion() {
 //  Cuando se cargue la página completamente se ejecute el codigo que hay dentro
 window.onload = function(){
     formulario.onsubmit = validacion
+    
 }

@@ -1,35 +1,31 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Actividad 1 Requerimiento 2</title>
-        <script src="JS_actividad1_requrimiento2.js"></script>
-    </head>
+  <head>
+    <meta charset="UTF-8">
+    <title>Actividad 2 Requerimiento 1</title>
+    <script src="JS_cargar _datos.js"></script>
+    <script src="JS_validaciones.js"></script>
+  </head>
 
+  <body>
+    <form id="formulario">
+      <h3>Rellena el formulario :</h3>
+      <div>
+        <input type="text" id="texto1" placeholder="nombre" value="">
+        <input type="text" id="texto2" placeholder="direccion" value="">
+        <input type="text" id="texto3" placeholder="telefono" value="">
+        <input type="text" id="texto4" placeholder="email" value="">
+      </div>
+      <h3>Elige tamaño :</h3>
+      <div id="cargarTamaños"></div>
+      <h3>Selecciona ingredientes :</h3>
+      <div id="cargarIngredientes"></div>
+      <h3>Calcular pedido :</h3>
+      <div></div>
+      <button id="refrescar">Refrescar</button>
+      <button id='validar'  value="pedido" >Calcular precio</button>
 
-    <body>
-        <form id="formulario" >
-
-            <h3>Rellena el formulario :</h3>
-                <input type="text" id="texto1" placeholder="nombre" value="">
-                <input type="text" id="texto2" placeholder="direccion" value="">
-                <input type="text" id="texto3" placeholder="telefono" value="">
-                <input type="text" id="texto4" placeholder="email" value="">
-                
-            <h3>Elige tamaño :</h3>
-                <input type="radio" id="Pequeña" name="tamaño" value="Pequeña">Pequeña
-                <input type="radio" id="Mediana" name="tamaño" value="Mediano">Mediana
-                <input type="radio" id="Grande" name="tamaño" value="Grande">Grande
-
-            <h3>Elige tus ingredientes favoritos :</h3>
-                <input type="checkbox" id="checkbox1" name="Ingredientes" value="ExtraDeQueso">Extra de queso
-                <input type="checkbox" id="checkbox2" name="Ingredientes" value="Jamon">Jamon 
-                <input type="checkbox" id="checkbox3" name="Ingredientes" value="Pollo">Pollo 
-                <input type="checkbox" id="checkbox4" name="Ingredientes" value="Champiñones">Champiñones
-
-            <h3>Calcular pedido :</h3>
-                <button id='validar'  value="pedido" >Calcular precio</button>
-                <button id="refrescar">Refrescar</button>
-            </form>
-    </body>
+      </div>
+    </form>
+  </body>
 </html>
