@@ -47,7 +47,7 @@ function validacion() {
             return false
         }
 
-    pregunta6 = document.getElementsByName('ingredientes')
+    pregunta6 = document.getElementsByName('ingrediente')
     var seleccionado1 = false
     for(var i=0; i<pregunta6.length; i++) {
         if(pregunta6[i].checked) {
@@ -96,12 +96,12 @@ function validacion() {
 
     pregunta11 = document.getElementById('checkbox2')
         if(pregunta11.checked) {
-            precioIngredientes2 = 1
+            precioIngredientes2 = 3
         }
 
     pregunta12 = document.getElementById('checkbox3')
         if(pregunta12.checked) {
-            precioIngredientes3 = 1
+            precioIngredientes3 = 2
         }
 
     pregunta13 = document.getElementById('checkbox4')
