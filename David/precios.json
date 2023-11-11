@@ -1,0 +1,30 @@
+{
+    "tamano1": {
+        "id": "1",
+        "precio": "5"
+    },
+    "tamano2": {
+        "id": "2",
+        "precio": "10"
+    },
+    "tamano3": {
+        "id": "3",
+        "precio": "15"
+    },
+    "ingrediente1": {
+        "id": "1",
+        "precio": "1"
+    },
+    "ingrediente2": {
+        "id": "2",
+        "precio": "2"
+    },
+    "ingrediente3": {
+        "id": "3",
+        "precio": "3"
+    },
+    "ingrediente4": {
+        "id": "4",
+        "precio": "4"
+    }
+}

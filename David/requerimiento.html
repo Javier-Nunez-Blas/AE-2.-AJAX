@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<htmal>
+    <head>
+        <script>
+            function hacerPedido(){
+                //Vamos a validar que los campos de texto no esten vacios
+                var nombre=document.getElementById("nombre").value;
+                if(nombre==""){
+                    alert("introduce nombre");
+                }else{
+                    var direccion=document.getElementById("direccion").value;
+                    if(direccion==""){
+                        alert("introduce direccion");
+                    }else{
+                        var telefono=document.getElementById("telefono").value;
+                        if(telefono==""){
+                            alert("intriduce telefono");
+                        }else{
+                            var email=document.getElementById("email").value;
+                            if(email==""){
+                                alert("introduce email");
+                            }else{
+                                //Validamos que hayamos seleccionado algunas de las opciones de los radioButton
+                                const tamano = document.querySelector('input[name="tamano"]:checked');
+                                if (tamano==null){
+                                    alert("introduce tamaño");
+                                }else{
+                                    //Validamos que hayamos seleccionado algunas de las opciones de los checkBox
+                                    const ingredientes = document.querySelectorAll('input[name="ingredientes"]:checked');
+                                    if (ingredientes==null || ingredientes.length <1){
+                                        alert("introduce al menos un ingredientes");
+                                    }else{
+                                        //Todos los campos estan validados por lo tanto puedo calcular el precio
+                                        cargarPrecio();                                        
+                                    }
+                                }                                
+                            }
+                        }
+                    }                    
+                }
+            }
+
+            function cargarPantalla(){
+                document.getElementById("divImporte").style.display = "none";
+                cargarTamanosPizza();
+                cargarIngredientesPizza();
+            }
+
+            function cargarTamanosPizza(){
+                const URL = "http://localhost:5501/"
+                const TAMANOS = "tamanos.json";
+                
+                let xmlHttp = new XMLHttpRequest();
+
+                xmlHttp.onreadystatechange = function(){        
+                    //Solo cuando la respuesta este completa y su estado sea 200 (OK) leeremos el mensaje
+                    //del servidor y la procesamos
+                    if( this.readyState == 4){
+                        if(this.status == 200){//OK
+                            var objetoJson = JSON.parse(this.responseText)
+                            console.log(objetoJson.tamano1);
+
+                            var tamanos =  
+                            "<h2>Tamaño pizza</h2>" 
+                            + objetoJson.tamano1.nombre + " " + + objetoJson.tamano1.precio + "€"
+                            + "<input type='radio' id='pequena' value='" + objetoJson.tamano1.id + "' name='tamano'/>" 
+                            + objetoJson.tamano2.nombre + " " + + objetoJson.tamano2.precio + "€"
+                            + "<input type='radio' id='mediana' value='" + objetoJson.tamano2.id + "' name='tamano'/>"
+                            + objetoJson.tamano3.nombre + " " + + objetoJson.tamano3.precio + "€"
+                            + "<input type='radio' id='grande' value='" + objetoJson.tamano3.id + "' name='tamano'/>";
+                            
+                            divTamanos.innerHTML = tamanos;
+
+                        } else {
+                            alert("Algo ha fallado")
+                        }
+                    }
+                }
+
+                xmlHttp.open('GET', URL + TAMANOS, false);
+                xmlHttp.send(null);
+            }
+
+            function cargarIngredientesPizza(){
+                const URL = "http://localhost:5501/"
+                const INGREDIENTES = "ingredientes.json"
+                
+                let xmlHttp = new XMLHttpRequest();
+
+                xmlHttp.onreadystatechange = function(){        
+                    //Solo cuando la respuesta este completa y su estado sea 200 (OK) leeremos el mensaje
+                    //del servidor y la procesamos
+                    if( this.readyState == 4){
+                        if(this.status == 200){//OK
+                            var objetoJson = JSON.parse(this.responseText)
+                            console.log(objetoJson.tamano1);
+
+                            var ingredientes =  
+                                "<h2>Ingredientes</h2>"
+                                + objetoJson.ingrediente1.nombre + " " + + objetoJson.ingrediente1.precio + "€"
+                                +"<input type='checkBox' id='aceitunas' value='aceitunas' name='ingredientes'/>"
+                                + objetoJson.ingrediente2.nombre + " " + + objetoJson.ingrediente2.precio + "€"
+                                +"<input type='checkBox' id='atun' value='atun' name='ingredientes'/>"
+                                + objetoJson.ingrediente3.nombre + " " + + objetoJson.ingrediente3.precio + "€"
+                                +"<input type='checkBox' id='bacon' value='bacon' name='ingredientes'/>"
+                                + objetoJson.ingrediente4.nombre + " " + + objetoJson.ingrediente4.precio + "€"
+                                +"<input type='checkBox' id='peperoni' value='peperoni' name='ingredientes'/>";
+                            
+                            divIngredientes.innerHTML = ingredientes;
+
+                        } else {
+                            alert("Algo ha fallado")
+                        }
+                    }
+                }
+
+                xmlHttp.open('GET', URL + INGREDIENTES, false);
+                xmlHttp.send(null);
+            }
+
+            //Función para calcular el precio
+            function cargarPrecio(){
+                const URL = "http://localhost:5501/"
+                const PRECIOS = "precios.json";
+                
+                let xmlHttp = new XMLHttpRequest();
+                var ingredientesSelecionados = "";
+                var tamanoSeleccionado;
+                var total = 0;
+
+                xmlHttp.onreadystatechange = function(){        
+                    //Solo cuando la respuesta este completa y su estado sea 200 (OK) leeremos el mensaje
+                    //del servidor y la procesamos
+                    if( this.readyState == 4){
+                        if(this.status == 200){//OK
+                            var objetoJson = JSON.parse(this.responseText);                    
+
+                            //  Obtenemos todas las opciones de los radiobuttons y checkboxs
+                            var radioButtons = document.getElementsByName('tamano');
+                            var checkboxs = document.getElementsByName('ingredientes');
+
+                            //   Obtenemos el tamaño de pizza seleccionado
+                            for (var i = 0; i < radioButtons.length; i++) {
+                                if (radioButtons[i].checked) {
+                                    tamanoSeleccionado = radioButtons[i].value;
+                                    break; 
+                                }
+                            }                           
+
+                            //  Sumamos el precio del tamaño de pizza elegido
+                            if(tamanoSeleccionado == objetoJson.tamano1.id){
+                                total = parseFloat(objetoJson.tamano1.precio);
+                            }else{
+                                if(tamanoSeleccionado == objetoJson.tamano2.id){
+                                    total = parseFloat(objetoJson.tamano2.precio);
+                                }else{
+                                    total = parseFloat(objetoJson.tamano3.precio);
+                                }
+                            }
+
+                            var id = 1;
+                            for (var i = 0; i < checkboxs.length; i++) {
+
+                                //  Obtenemos los checkbox seleccionados para enviarlos al servidor
+                                if (checkboxs[i].checked) {
+                                    if(ingredientesSelecionados!=""){
+                                        ingredientesSelecionados = ingredientesSelecionados + "," + checkboxs[i].value;
+                                    }else{
+                                        ingredientesSelecionados = checkboxs[i].value;
+                                    }
+
+                                    //  Sumamos el precio de cada ingrediente seleccionado
+                                    if(id == objetoJson.ingrediente1.id){
+                                        total = total + parseFloat(objetoJson.ingrediente1.precio);
+                                    }
+                                    if(id == objetoJson.ingrediente2.id){
+                                        total = total + parseFloat(objetoJson.ingrediente2.precio);
+                                    }
+                                    if(id == objetoJson.ingrediente3.id){
+                                        total = total + parseFloat(objetoJson.ingrediente3.precio);
+                                    }
+                                    if(id == objetoJson.ingrediente4.id){
+                                        total = total + parseFloat(objetoJson.ingrediente4.precio);
+                                    }
+
+                                    id++;
+                                }
+                            }
+
+                            var precio = "<h2>Importe</h2>" + 
+                                "<input type='text' id='precio' value='" + total + "'/>";
+
+                            divImporte.innerHTML = precio;
+                            document.getElementById("divImporte").style.display = "block";
+                        } else {
+                            alert("Algo ha fallado")
+                        }
+                    }
+                }
+
+                //  Enviamos los valores selecionados como parametros de entrada en la URL
+                xmlHttp.open('GET', URL + PRECIOS 
+                    + "?tamanoSelecionado=" + tamanoSeleccionado + "&ingredientes=" + ingredientesSelecionados,
+                    false);
+
+                xmlHttp.send(null);
+            }
+        </script>
+    </head>
+    <body onload="cargarPantalla()">
+        <h1>Pizzeria</h1>
+        <img src="img/pizzeria.jpeg"/>
+        
+        <form id="formulario">
+            <h2>Informacion de clientes</h2>
+            <input type ="text" id="nombre" placeholder="nombre"/>
+            <input type ="text" id="direccion" placeholder="direccion"/>
+            <input type="text" id="telefono" placeholder="telefono"/>
+            <input type="text" id="email" placeholder="email"/>
+
+            <div id="divTamanos"></div>
+
+            <div id="divIngredientes"></div>
+
+            <br>
+            <br>
+            <input type="Button" value="Preparar pedido" onclick="hacerPedido()"/>
+            <input type="Button" value="Refrescar" onclick="cargarPantalla()"/>
+
+            <div id="divImporte"></div>            
+        </form>
+       
+    </body>
+</htmal>
