@@ -1,0 +1,22 @@
+{
+    "ingrediente1": {
+        "id": "1",
+        "nombre": "Anchoas",
+        "precio": "1"
+    },
+    "ingrediente2": {
+        "id": "2",
+        "nombre": "Pepperoni",
+        "precio": "2"
+    },
+    "ingrediente3": {
+        "id": "3",
+        "nombre": "Champiñones",
+        "precio": "3"
+    },
+    "ingrediente4": {
+        "id": "4",
+        "nombre": "Aceitunas",
+        "precio": "4"
+    }
+}
