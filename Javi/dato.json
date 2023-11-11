@@ -1,4 +1,36 @@
 {
     "tamaños": ["Pequeña", "Mediana", "Grande"],
-    "ingredientes": ["Extra de queso : 1€","Jamon: 3€","Pollo : 2€","Champiñones : 1€"]
+    
+        "ingredientes": [
+        {
+            "nombre": "Extra de queso",
+             "precio": 2
+        },
+        {
+            "nombre": "Jamon", 
+            "precio": 1
+        },
+        {
+            "nombre": "Pollo", 
+            "precio": 2
+        },
+        {
+            "nombre": "Champiñones"
+            , "precio": 1
+        },
+        {
+            "nombre": "Bacon", 
+            "precio": 2
+        },
+        {
+            "nombre": "Piña", 
+            "precio": 2
+        },
+        {
+            "nombre": "Carne picada"
+            , "precio": 3
+        }
+        
+        ]
+      
 }
