@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Requerimiento 2</title>
+
+    <style>
+        .pizzas {
+            border-collapse: collapse;
+            width: 50%;
+            text-align: center;   
+        }   
+    </style>
+
+    <script>
+        //creamos las constantes
+        const URL_DESTINO = "http://localhost:5500/Ana/"
+        const INFOPIZZAS = "infoPizzas.json"
+
+        function inicio(){
+            //creamos las función para cargar los tamaños de las pizzas y los ingredientes
+            cargarTamanos();
+            cargarIngredientes();
+        }
+
+        function cargarTamanos(){
+            //2) creamos el objeto HTTPREQUEST (donde vamos a manejar las peticiones que hagamos)
+            let xmlHttp = new XMLHttpRequest();
+
+            //3) y creamos la función "callback", que se va a encargar de gestionar las respuestas
+            //del servidor (los siguientes, pasos ahora, no se ejecutarían hasta que terminemos de crear 
+            //petición() solo se ejecutarán en el momento que cambiemos el estado de la petición
+           
+            // 5) como ahora ya está creada la petición y ha cambiado su estado se ejecutará
+            //esta fucnión:  
+            xmlHttp.onreadystatechange = function(){  
+                //continuamos el proceso si la petición del servidor es 4, es decir, si está
+                //completo y me ha llegado toda la info del json
+                if( this.readyState == 4){
+                   //y la respuesta del back está okey, no hay ningún error... (==200)
+                    if(this.status == 200){
+                        
+                        //ahora vamos crear un a variable es un objetoJSON que va a transformar
+                        //ese texto(la información que me llega del servidor) en un documento .JSON
+                        var objetoJson = JSON.parse(this.responseText)
+                        
+
+                            //  mejorar usando addChild
+                        //creamos la variable "tamaños" el html que se va a pintar
+                        var tamanos =  
+                            "<tr>" + 
+                                "<td><img src='img/pizza.png' alt='pizza S' id='s' width = '55px' height = '55px'></td>" + 
+                                "<td><img src='img/pizza.png' alt='pizza M' id='m' width = '80px' height = '80px'></td>" + 
+                                "<td><img src='img/pizza.png' alt='pizza L' id='l' width = '100px' height = '100px'></td>" + 
+                                "</tr>" + 
+                        " <tr>" + 
+                            //accedemos al doc.json y nos traemos la infomaciónq que vamos a necesitar llamando 
+                            //al objeto completo creado y especificamos los valores que neceistamos para trabajar
+                            "  <td><h4>" + objetoJson.tamano1.precio + " €</h4></td>" + 
+                            "  <td><h4>" + objetoJson.tamano2.precio + " €</h4></td>" + 
+                            "  <td><h4>" + objetoJson.tamano3.precio + " €</h4></td>" + 
+                            "</tr>" + 
+                            "<tr>" + 
+                                " <td><input type='radio' id='tamañoPizzaPequeña' name='tamañoPizza' value='" + objetoJson.tamano1.id + "'>" + objetoJson.tamano1.nombre + "</td>" + 
+                                " <td><input type='radio' id='tamañoPizzaMediana' name='tamañoPizza' value='" + objetoJson.tamano2.id + "'>" + objetoJson.tamano2.nombre + "</td>" + 
+                                " <td><input type='radio' id='tamañoPizzaGrande' name='tamañoPizza' value='" + objetoJson.tamano3.id + "'>" + objetoJson.tamano3.nombre + "</td>" + 
+                            "</tr>";
+
+                        //con innerHTML hacemos que esta variable se inyecte en el HTML original
+                        table_tamano.innerHTML = tamanos;
+                          
+                    //si se produce algún error salrá mensaje de alerta "Error!"    
+                    } else {
+                        alert("Error!")
+                    }
+                }
+            }
+
+            //4) creamos la petición
+            xmlHttp.open('GET', URL_DESTINO + INFOPIZZAS, false);
+            //le pasamos la url y el recurso (el doc.JSON) de forma asíncrona (false)
+
+            //y se manda la petición
+            xmlHttp.send();
+        }
+
+        //creamos la función ingredientes
+        function cargarIngredientes(){
+            // creamos el objeto XMLHttpRequest
+            let xmlHttp = new XMLHttpRequest();
+            // en el momento que cambie el estado de la petición entraríamos por aquí
+            xmlHttp.onreadystatechange = function(){        
+                
+                if( this.readyState == 4){
+                    if(this.status == 200){
+                        var objetoJson = JSON.parse(this.responseText)
+                        console.log(objetoJson.tamano1);
+                        // creamos la variable ingredientes
+                        var ingredientes =
+                            // nos traemos del archivo json tanto el nombre como el precio de los ingredientes
+                            "<input type='checkbox' id='extra1' name='extras' value='1'> " + objetoJson.ingrediente1.nombre + " (" + objetoJson.ingrediente1.precio + "€)<br>" +
+                            "<input type='checkbox' id='extra2' name='extras' value='2'> " + objetoJson.ingrediente2.nombre + " (" + objetoJson.ingrediente2.precio + "€)<br>" +
+                            "<input type='checkbox' id='extra3' name='extras' value='3'> " + objetoJson.ingrediente3.nombre + " (" + objetoJson.ingrediente3.precio + "€)<br>" +
+                            "<input type='checkbox' id='extra4' name='extras' value='4'> " + objetoJson.ingrediente4.nombre + " (" + objetoJson.ingrediente4.precio + "€)<br><br>";
+                            // con esta varible accemos que se inyecte en el html
+                            div_ingredientes.innerHTML = ingredientes;
+
+
+                    } else {
+                        alert("Error!")
+                    }
+                }
+            }
+
+            xmlHttp.open('GET', URL_DESTINO + INFOPIZZAS, false);
+            xmlHttp.send();
+        }
+
+        //creamos la función para calcular el precio, aquí ya estamos recibiendo el 
+        function calcularPrecio(){
+        
+            let xmlHttp = new XMLHttpRequest();
+            var ingredientesSelecionados = "";
+            var tamanoSeleccionado;
+
+            var radioButtons = document.getElementsByName('tamañoPizza');
+
+            //   Obtenemos el radiobutton seleccionado
+            for (var i = 0; i < radioButtons.length; i++) {
+                if (radioButtons[i].checked) {
+                    tamanoSeleccionado = radioButtons[i].value;
+                    break; 
+                }
+            }
+
+            var checkboxs = document.getElementsByName('extras');
+
+            var id = 1;
+            for (var i = 0; i < checkboxs.length; i++) {
+
+                //  Obtenemos los checkbox seleccionados para enviarlos al servidor
+                if (checkboxs[i].checked) {
+                    if(ingredientesSelecionados!=""){
+                        ingredientesSelecionados = ingredientesSelecionados + "," + checkboxs[i].value;
+                    }else{
+                        ingredientesSelecionados = checkboxs[i].value;
+                    }
+                }
+            }
+
+            xmlHttp.onreadystatechange = function(){        
+                //Solo cuando la respuesta este completa y su estado sea 200 (OK) leeremos el mensaje
+                //del servidor y la procesamos
+                if( this.readyState == 4){
+                    if(this.status == 200){//OK
+                        var objetoJson = JSON.parse(this.responseText);                     
+
+                        var totalCost = 0;
+
+                        //  Sumamos el precio del tamaño elegido
+                        if(tamanoSeleccionado == objetoJson.tamano1.id){
+                            totalCost = parseFloat(objetoJson.tamano1.precio);
+                        }else{
+                            if(tamanoSeleccionado == objetoJson.tamano2.id){
+                                totalCost = parseFloat(objetoJson.tamano2.precio);
+                            }else{
+                                totalCost = parseFloat(objetoJson.tamano3.precio);
+                            }
+                        }
+
+                        var checkboxs = document.getElementsByName('extras');
+
+                        var id = 1;
+                        for (var i = 0; i < checkboxs.length; i++) {
+
+                            //  Obtenemos los checkbox seleccionados para enviarlos al servidor
+                            if (checkboxs[i].checked) {
+        
+                                //  Sumamos el precio de cada ingrediente seleccionado
+                                if(id == objetoJson.ingrediente1.id){
+                                    totalCost = totalCost + parseFloat(objetoJson.ingrediente1.precio);
+                                }
+                                if(id == objetoJson.ingrediente2.id){
+                                    totalCost = totalCost + parseFloat(objetoJson.ingrediente2.precio);
+                                }
+                                if(id == objetoJson.ingrediente3.id){
+                                    totalCost = totalCost + parseFloat(objetoJson.ingrediente3.precio);
+                                }
+                                if(id == objetoJson.ingrediente4.id){
+                                    totalCost = totalCost + parseFloat(objetoJson.ingrediente4.precio);
+                                }
+
+                                id++;
+                            }
+                        }
+
+                        resultado.innerHTML = "IMPORTE TOTAL: " + totalCost + " €";
+                    } else {
+                        alert("Error!")
+                    }
+                }
+            }
+
+            //  Enviamos los valores selecionados como parametros de entrada en la URL
+            xmlHttp.open('GET', URL_DESTINO + INFOPIZZAS 
+                + "?tamanoSelecionado=" + tamanoSeleccionado + "&ingredientes=" + ingredientesSelecionados,
+                 false);
+
+            xmlHttp.send();
+        }
+
+    </script>
+
+</head>
+
+<body onload="inicio()">
+<!-- 1) primero pintamos el html y una vez que se ha pintado el body llammos a 
+    la función "inicio" para cargar la info del JSON-->
+    <table>
+        <tr>
+            <td><img src="img/moto.png" alt="moto" id="moto" width = "90px" height = "50px"></td>
+            <td><h1>Peccati Pizzeria </h1></td>
+        </tr>
+    </table>
+
+    <form id="miFormulario">
+    <h3>Realizar pedido</h3>
+    <p>Datos peronales:</p>
+    <hr/>
+        <table class="registro">
+            <tr>
+                <td><label for="nombre">Nombre:</label></td>
+                <td><input type="text" id="nombre" name="nombre" required></td>
+            </tr>
+            <tr>
+                <td><label for="telefono">Teléfono:</label></td>
+                <td><input type="text" id="telefono" name="telefono" required></td>
+            </tr>
+            <tr>
+                <td><label for="email">Email:</label></td>
+                <td><input type="email" id="email" name="email" required></td>
+            </tr>
+        </table>
+        
+        <hr/>
+        <table class="direccion">
+            <tr>
+                <td><label for="direccion">Dirección:</label></td>
+                <td><input type="text" id="direccion" name="direccion" required></td>
+            </tr>
+            <tr>
+                <td><label for="ciudad">Ciudad:</label></td>
+                <td><input type="text" id="ciudad" name="ciudad" required></td>
+            </tr>
+            <tr>
+                <td><label for="cpostal">Código postal:</label></td>
+                <td><input type="text" id="cpostal" name="cpostal" required></td>
+            </tr>
+        </table>
+
+        <hr/>
+
+        <label><h3>Tamaño pizza</h3></label><br>
+        <table id="table_tamano" class="pizzas">
+          
+            <!-- se crea la tabla vacía que pintaremos en el html, porque le inyectaremos
+            esa información a través del doc.json -->
+
+        </table>
+        
+        <hr/>
+
+        <label><h3>Añade extras</h3></label>
+        <p>Elige al menos uno de tus favoritos</p>
+        <div id="div_ingredientes"></div>
+        <input type="button" value="Refrescar" onclick="init()">
+        <input type="submit" value="Realizar pedido">
+
+
+    </form>
+
+    <div id="resultado"></div>
+</body>
+
+<script>
+    const formulario = document.getElementById('miFormulario');
+    const resultadoDiv = document.getElementById('resultado');
+
+    formulario.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        // validamos que todos los campos del formulario estén completos
+        const nombre = document.getElementById('nombre').value;
+        const telefono = document.getElementById('telefono').value;
+        const email = document.getElementById('email').value;
+        const direccion = document.getElementById('direccion').value;
+        const ciudad = document.getElementById('ciudad').value;
+        const cpostal = document.getElementById('cpostal').value;
+        
+        // validamos que se haya seleccionado un tamaño de pizza
+        const tamañoPizza = document.querySelector('input[name="tamañoPizza"]:checked');
+
+        // validamos que se hayan seleccionado los extras
+        const extras = document.querySelectorAll('input[name="extras"]:checked');
+
+        if (nombre.trim() === '' || direccion.trim() === '' || telefono.trim() === '' ||
+         !tamañoPizza || extras.length < 1 || extras.length > 4) {
+            alert('Por favor, complete todos los campos obligatorios.');
+            // detiene el envío del formulario si no están completados los campos
+        } else {
+            
+            //  Llamamos a la función para calcular el precio
+            calcularPrecio();
+          
+            // mostramos el mensaje alerta para confirmar que el pedido ha sido realizado y a 
+            //continuación se mostraré el precio total del pedido
+            alert('PEDIDO REALIZADO' )
+           
+        }
+    });
+    
+</script>
+</html>
+

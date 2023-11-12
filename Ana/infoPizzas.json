@@ -1,0 +1,38 @@
+
+{
+    "tamano1": {
+        "id": "1",
+        "nombre": "Pequeña",
+        "precio": "5"
+    },
+    "tamano2": {
+        "id": "2",
+        "nombre": "Mediana",
+        "precio": "10"
+    },
+    "tamano3": {
+        "id": "3",
+        "nombre": "Grande",
+        "precio": "15"
+    },
+    "ingrediente1": {
+        "id": "1",
+        "nombre": "Anchoas",
+        "precio": "1"
+    },
+    "ingrediente2": {
+        "id": "2",
+        "nombre": "Pepperoni",
+        "precio": "2"
+    },
+    "ingrediente3": {
+        "id": "3",
+        "nombre": "Champiñones",
+        "precio": "3"
+    },
+    "ingrediente4": {
+        "id": "4",
+        "nombre": "Aceitunas",
+        "precio": "4"
+    }
+}
