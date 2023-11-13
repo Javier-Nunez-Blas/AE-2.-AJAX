@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Actividad 2</title>
   <script src="JS_validaciones.js"></script>
-  <script src="JS_Refresh.js"></script>
+  <script src="JS_refrescar.js"></script>
 </head>
 
 <body>
@@ -25,72 +25,88 @@
     <div id="cargarIngredientes"></div>
     <h3>Calcular pedido :</h3>
     <div></div>
-    <button id="refrescar">Refrescar</button>
-    <button id="validar" value="pedido">Calcular precio</button>
+    <button id="refrescar" type="button">Refrescar</button>
+    <button id="validar" type="submit" value="pedido">Calcular precio</button>
+
   </form>
 </body>
-
-<script type="application/javascript">
-  document.addEventListener("DOMContentLoaded", function() {
-    var div1 = document.getElementById('cargarTamaños')
-    var div2 = document.getElementById('cargarIngredientes')
-
-    var xmlHttp = new XMLHttpRequest()
-    var URL_DESTINO = "http://localhost:5501/"
-    var RECURSO = "dato.json"
-
-    xmlHttp.open('GET', URL_DESTINO + RECURSO, true)
-
-    xmlHttp.onreadystatechange = function() {
-  if (xmlHttp.readyState === 4) {
-    if (xmlHttp.status === 200) {
-      var datos = JSON.parse(xmlHttp.responseText)
-      var tamaños = datos.tamaños
-      var ingredientes = datos.ingredientes
-
-      function createRadioInput(tamaño) {
-        var label = document.createElement('label')
-        label.setAttribute('for', 'tamaños')
-        var input = document.createElement('input')
-        input.type = 'radio'
-        input.name = 'tamaño'
-        input.value = tamaño
-        input.placeholder = tamaño
-        var textInput =document.createTextNode(tamaño)
-        label.appendChild(input)
-        label.appendChild(textInput)
-        return label
-      }
-
-      function createCheckboxInput(ingrediente) {
-        var label1 = document.createElement('label')
-        label1.setAttribute('for', 'ingrediente')
-        var input1 = document.createElement('input')
-        input1.type = 'checkbox'
-        input1.name = 'ingrediente'
-        input1.value = ingrediente
-        input1.placeholder = ingrediente
-        var textInput1 =document.createTextNode(ingrediente)
-        label1.appendChild(input1)
-        label1.appendChild(textInput1)
-        return label1
-      }
-
-      tamaños.forEach(function(tamaño) {
-        div1.appendChild(createRadioInput(tamaño))
-      });
-
-      ingredientes.forEach(function(ingrediente) {
-        div2.appendChild(createCheckboxInput(ingrediente))
-      })
-    } else {
-      alert("ZASCA!")
-      console.log(xmlHttp.readyState)
-    }
-  }
-}
-    xmlHttp.send(null)
-  })
-</script>
-
 </html>
+
+<script>
+var datos; // Declarar datos en el ámbito global
+
+// Esta función se ejecutará cuando se cargue completamente la página
+window.onload = function() {
+  // Configura el evento onsubmit del formulario
+  var formulario = document.getElementById('formulario');
+  formulario.onsubmit = validacion;
+
+  var div1 = document.getElementById('cargarTamaños');
+  var div2 = document.getElementById('cargarIngredientes');
+
+  
+  var xmlHttp = new XMLHttpRequest();
+  var URL_DESTINO = "http://localhost:5501/";
+  var RECURSO = "dato.json";
+
+  xmlHttp.open('GET', URL_DESTINO + RECURSO, true);
+
+  xmlHttp.onreadystatechange = function() {
+    if (xmlHttp.readyState === 4) {
+      if (xmlHttp.status === 200) {
+        datos = JSON.parse(xmlHttp.responseText); // Accede a la variable global "datos"
+        var tamaños = datos.tamaños;
+        var ingredientes = datos.ingredientes;
+
+        function createRadioInput(tamaño) {
+          var label = document.createElement('label');
+          label.setAttribute('for', tamaño);
+          var input = document.createElement('input');
+          input.type = 'radio';
+          input.name = 'tamaño';
+          input.id = tamaño;
+          input.value = tamaño;
+          input.placeholder = tamaño;
+          var textInput = document.createTextNode(tamaño);
+          label.appendChild(input);
+          label.appendChild(textInput);
+          return label;
+        }
+
+        function createCheckboxInput(ingrediente) {
+          var label1 = document.createElement('label');
+          label1.setAttribute('for', ingrediente.nombre);
+          var input1 = document.createElement('input');
+          input1.type = 'checkbox';
+          input1.name = 'ingrediente';
+          input1.id = ingrediente.nombre;
+          input1.value = ingrediente.nombre;
+          input1.placeholder = ingrediente.nombre;
+          var textInput1 = document.createTextNode(ingrediente.nombre);
+          label1.appendChild(input1);
+          label1.appendChild(textInput1);
+          return label1;
+        }
+
+        tamaños.forEach(function(tamaño) {
+          div1.appendChild(createRadioInput(tamaño));
+        });
+
+        ingredientes.forEach(function(ingrediente) {
+          div2.appendChild(createCheckboxInput(ingrediente));
+        });
+      } else {
+        alert("ZASCA!");
+        console.log(xmlHttp.readyState);
+      }
+    }
+  };
+
+  xmlHttp.send(null);
+}
+
+var refrescarButton = document.getElementById('refrescar');
+    refrescarButton.addEventListener('click', function() {
+      refrescar();
+    });
+</script>
