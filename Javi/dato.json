@@ -1,33 +1,33 @@
 {
-    "tamaños": ["Pequeña", "Mediana", "Grande"],
+    "tamaños": ["Pequeña  : 5€ ", "Mediana : 10€ ", "Grande : 15€ "],
     
         "ingredientes": [
         {
-            "nombre": "Extra de queso",
+            "nombre": "Extra de queso : 2€ ",
              "precio": 2
         },
         {
-            "nombre": "Jamon", 
+            "nombre": "Jamon : 1€ ", 
             "precio": 1
         },
         {
-            "nombre": "Pollo", 
+            "nombre": "Pollo : 2€ ", 
             "precio": 2
         },
         {
-            "nombre": "Champiñones"
+            "nombre": "Champiñones : 1€ "
             , "precio": 1
         },
         {
-            "nombre": "Bacon", 
+            "nombre": "Bacon : 2€ ", 
             "precio": 2
         },
         {
-            "nombre": "Piña", 
+            "nombre": "Piña : 2€ ", 
             "precio": 2
         },
         {
-            "nombre": "Carne picada"
+            "nombre": "Carne picada : 3€ "
             , "precio": 3
         }
         
