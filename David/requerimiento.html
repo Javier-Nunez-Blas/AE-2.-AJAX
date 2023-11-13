@@ -4,18 +4,23 @@
         <script>
             function hacerPedido(){
                 //Vamos a validar que los campos de texto no esten vacios
+                 // Obtener el valor del campo de texto 'nombre'
                 var nombre=document.getElementById("nombre").value;
+                // Validar que el campo 'nombre' no esté vacío
                 if(nombre==""){
                     alert("introduce nombre");
                 }else{
+                    // Si el campo 'nombre' está lleno, continuar con la validación del campo 'direccion'
                     var direccion=document.getElementById("direccion").value;
                     if(direccion==""){
                         alert("introduce direccion");
                     }else{
+                        // Validar que el campo 'teléfono' no esté vacío
                         var telefono=document.getElementById("telefono").value;
                         if(telefono==""){
                             alert("intriduce telefono");
                         }else{
+                            // Validar que el campo 'email' no esté vacío
                             var email=document.getElementById("email").value;
                             if(email==""){
                                 alert("introduce email");
@@ -30,8 +35,35 @@
                                     if (ingredientes==null || ingredientes.length <1){
                                         alert("introduce al menos un ingredientes");
                                     }else{
+                                        var ingredientesSelecionados = "";
+                                        var tamanoSeleccionado;
+
+                                        //  Obtenemos todas las opciones de los radiobuttons y checkboxs
+                                        var radioButtons = document.getElementsByName('tamano');
+                                        var checkboxs = document.getElementsByName('ingredientes');
+
+                                        //   Obtenemos el tamaño de pizza seleccionado
+                                        for (var i = 0; i < radioButtons.length; i++) {
+                                            if (radioButtons[i].checked) {
+                                                tamanoSeleccionado = radioButtons[i].value;
+                                                break; 
+                                            }
+                                        }    
+                                        
+                                        for (var i = 0; i < checkboxs.length; i++) {
+
+                                            //  Obtenemos los checkbox seleccionados para enviarlos al servidor
+                                            if (checkboxs[i].checked) {
+                                                if(ingredientesSelecionados!=""){
+                                                    ingredientesSelecionados = ingredientesSelecionados + "," + checkboxs[i].value;
+                                                }else{
+                                                    ingredientesSelecionados = checkboxs[i].value;
+                                                }
+                                            }
+                                        }
+
                                         //Todos los campos estan validados por lo tanto puedo calcular el precio
-                                        cargarPrecio();                                        
+                                        cargarPrecio(tamanoSeleccionado, ingredientesSelecionados);                                        
                                     }
                                 }                                
                             }
@@ -39,19 +71,26 @@
                     }                    
                 }
             }
-
+            // Esta función se llama al cargar la pantalla
             function cargarPantalla(){
+                // Ocultar el elemento con id "divImporte"
                 document.getElementById("divImporte").style.display = "none";
+
+                // Cargar los tamaños de pizza disponibles
                 cargarTamanosPizza();
+                 // Cargar los ingredientes de pizza disponibles
                 cargarIngredientesPizza();
             }
-
+             // Esta función se encarga de cargar los tamaños de pizza
             function cargarTamanosPizza(){
+                // Definir la URL del archivo JSON con los tamaños de pizza
                 const URL = "http://localhost:5501/"
                 const TAMANOS = "tamanos.json";
-                
+
+                // Crear una nueva instancia del objeto XMLHttpRequest
                 let xmlHttp = new XMLHttpRequest();
 
+                 // Establecer una función de devolución de llamada para el evento onreadystatechange
                 xmlHttp.onreadystatechange = function(){        
                     //Solo cuando la respuesta este completa y su estado sea 200 (OK) leeremos el mensaje
                     //del servidor y la procesamos
@@ -60,6 +99,7 @@
                             var objetoJson = JSON.parse(this.responseText)
                             console.log(objetoJson.tamano1);
 
+                            // Crear un bloque de HTML con información sobre los tamaños de pizza y radio buttons
                             var tamanos =  
                             "<h2>Tamaño pizza</h2>" 
                             + objetoJson.tamano1.nombre + " " + + objetoJson.tamano1.precio + "€"
@@ -69,43 +109,53 @@
                             + objetoJson.tamano3.nombre + " " + + objetoJson.tamano3.precio + "€"
                             + "<input type='radio' id='grande' value='" + objetoJson.tamano3.id + "' name='tamano'/>";
                             
+                            // Asignar el bloque de HTML al contenido del elemento con id 'divTamanos'
                             divTamanos.innerHTML = tamanos;
 
                         } else {
+                            // Mostrar una alerta en caso de que algo haya fallado en el procesamiento de la respuesta JSON
                             alert("Algo ha fallado")
                         }
                     }
                 }
-
+                // Crear una nueva solicitud GET usando el objeto XMLHttpRequest
                 xmlHttp.open('GET', URL + TAMANOS, false);
+                // Enviar la solicitud al servidor
                 xmlHttp.send(null);
             }
-
+             // Función para cargar información sobre los ingredientes de pizza
             function cargarIngredientesPizza(){
+                 // Definir la URL del archivo JSON con la información de los ingredientes
                 const URL = "http://localhost:5501/"
                 const INGREDIENTES = "ingredientes.json"
-                
+
+                // Crear una nueva instancia del objeto XMLHttpRequest
                 let xmlHttp = new XMLHttpRequest();
 
+                // Asignar una función de devolución de llamada para el evento onreadystatechange
                 xmlHttp.onreadystatechange = function(){        
                     //Solo cuando la respuesta este completa y su estado sea 200 (OK) leeremos el mensaje
                     //del servidor y la procesamos
                     if( this.readyState == 4){
                         if(this.status == 200){//OK
+
+                            // Parsear el contenido JSON de la respuesta y asignarlo a la variable 'objetoJson'
                             var objetoJson = JSON.parse(this.responseText)
                             console.log(objetoJson.tamano1);
 
+                            // Construir un bloque de HTML con información sobre los ingredientes y checkboxes
                             var ingredientes =  
                                 "<h2>Ingredientes</h2>"
                                 + objetoJson.ingrediente1.nombre + " " + + objetoJson.ingrediente1.precio + "€"
-                                +"<input type='checkBox' id='aceitunas' value='aceitunas' name='ingredientes'/>"
+                                +"<input type='checkBox' id='"+ objetoJson.ingrediente1.nombre +"' value='"+ objetoJson.ingrediente1.id +"' name='ingredientes'/>"
                                 + objetoJson.ingrediente2.nombre + " " + + objetoJson.ingrediente2.precio + "€"
-                                +"<input type='checkBox' id='atun' value='atun' name='ingredientes'/>"
+                                +"<input type='checkBox' id='"+ objetoJson.ingrediente2.nombre +"' value='"+ objetoJson.ingrediente2.id +"' name='ingredientes'/>"
                                 + objetoJson.ingrediente3.nombre + " " + + objetoJson.ingrediente3.precio + "€"
-                                +"<input type='checkBox' id='bacon' value='bacon' name='ingredientes'/>"
+                                +"<input type='checkBox' id='"+ objetoJson.ingrediente3.nombre +"' value='"+ objetoJson.ingrediente3.id +"' name='ingredientes'/>"
                                 + objetoJson.ingrediente4.nombre + " " + + objetoJson.ingrediente4.precio + "€"
-                                +"<input type='checkBox' id='peperoni' value='peperoni' name='ingredientes'/>";
-                            
+                                +"<input type='checkBox' id='"+ objetoJson.ingrediente4.nombre +"' value='"+ objetoJson.ingrediente4.id +"' name='ingredientes'/>";
+
+                            // Asignar el bloque de HTML al contenido del elemento con id 'divIngredientes'
                             divIngredientes.innerHTML = ingredientes;
 
                         } else {
@@ -113,40 +163,26 @@
                         }
                     }
                 }
-
+                 // Iniciar una solicitud GET síncrona al servidor para obtener la información de los ingredientes
                 xmlHttp.open('GET', URL + INGREDIENTES, false);
                 xmlHttp.send(null);
             }
-
+            
             //Función para calcular el precio
-            function cargarPrecio(){
+            function cargarPrecio(tamanoSeleccionado, ingredientesSelecionados  ){
                 const URL = "http://localhost:5501/"
                 const PRECIOS = "precios.json";
                 
                 let xmlHttp = new XMLHttpRequest();
-                var ingredientesSelecionados = "";
-                var tamanoSeleccionado;
                 var total = 0;
-
+                // Asignar una función de devolución de llamada para el evento onreadystatechange
                 xmlHttp.onreadystatechange = function(){        
                     //Solo cuando la respuesta este completa y su estado sea 200 (OK) leeremos el mensaje
                     //del servidor y la procesamos
                     if( this.readyState == 4){
                         if(this.status == 200){//OK
                             var objetoJson = JSON.parse(this.responseText);                    
-
-                            //  Obtenemos todas las opciones de los radiobuttons y checkboxs
-                            var radioButtons = document.getElementsByName('tamano');
-                            var checkboxs = document.getElementsByName('ingredientes');
-
-                            //   Obtenemos el tamaño de pizza seleccionado
-                            for (var i = 0; i < radioButtons.length; i++) {
-                                if (radioButtons[i].checked) {
-                                    tamanoSeleccionado = radioButtons[i].value;
-                                    break; 
-                                }
-                            }                           
-
+              
                             //  Sumamos el precio del tamaño de pizza elegido
                             if(tamanoSeleccionado == objetoJson.tamano1.id){
                                 total = parseFloat(objetoJson.tamano1.precio);
@@ -158,32 +194,28 @@
                                 }
                             }
 
-                            var id = 1;
+                            var checkboxs = document.getElementsByName('ingredientes');
+                            
                             for (var i = 0; i < checkboxs.length; i++) {
 
                                 //  Obtenemos los checkbox seleccionados para enviarlos al servidor
                                 if (checkboxs[i].checked) {
-                                    if(ingredientesSelecionados!=""){
-                                        ingredientesSelecionados = ingredientesSelecionados + "," + checkboxs[i].value;
-                                    }else{
-                                        ingredientesSelecionados = checkboxs[i].value;
-                                    }
-
                                     //  Sumamos el precio de cada ingrediente seleccionado
-                                    if(id == objetoJson.ingrediente1.id){
+                                    if(checkboxs[i].value == objetoJson.ingrediente1.id){
                                         total = total + parseFloat(objetoJson.ingrediente1.precio);
+                                    }else{
+                                        if(checkboxs[i].value == objetoJson.ingrediente2.id){
+                                            total = total + parseFloat(objetoJson.ingrediente2.precio);
+                                        }else{
+                                            if(checkboxs[i].value == objetoJson.ingrediente3.id){
+                                                total = total + parseFloat(objetoJson.ingrediente3.precio);
+                                            }else{
+                                                if(checkboxs[i].value == objetoJson.ingrediente4.id){
+                                                    total = total + parseFloat(objetoJson.ingrediente4.precio);
+                                                }
+                                            }
+                                        }
                                     }
-                                    if(id == objetoJson.ingrediente2.id){
-                                        total = total + parseFloat(objetoJson.ingrediente2.precio);
-                                    }
-                                    if(id == objetoJson.ingrediente3.id){
-                                        total = total + parseFloat(objetoJson.ingrediente3.precio);
-                                    }
-                                    if(id == objetoJson.ingrediente4.id){
-                                        total = total + parseFloat(objetoJson.ingrediente4.precio);
-                                    }
-
-                                    id++;
                                 }
                             }
 
